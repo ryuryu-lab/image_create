@@ -1,10 +1,12 @@
 import requests
 import io
 import base64
+import socket
 from PIL import Image, PngImagePlugin
 import streamlit as st
 
-url = "http://127.0.0.1:7860"
+ip = socket.gethostbyname(socket.gethostname())
+url = "http://" + ip + ":7860"
 
 st.set_page_config(
     page_title="Nobel Image Creator", 
@@ -45,7 +47,7 @@ with st.form("form"):
         }
 
         #webuiのapiを利用して画像生成、保存
-        response = requests.post(url=f'{url}/sdapi/v1/txt2img', json=payload)
+        response = requests.post(url=f'{url}/sdapi/v1/txt2img/', json=payload)
 
         r = response.json()
 
@@ -55,7 +57,7 @@ with st.form("form"):
             png_payload = {
                 "image": "data:image/png;base64," + i
             }
-            response2 = requests.post(url=f'{url}/sdapi/v1/png-info', json=png_payload)
+            response2 = requests.post(url=f'{url}/sdapi/v1/png-info/', json=png_payload)
 
             pnginfo = PngImagePlugin.PngInfo()
             pnginfo.add_text("parameters", response2.json().get("info"))
